@@ -1,0 +1,36 @@
+Novo teste
+       {}
+
+       []
+Novo teste
+       300
+       
+Novo teste
+       {}
+
+       []
+Novo teste
+       [156,'teste']
+
+       [156.0, "'teste'"]
+Novo teste
+       {
+	type: rodent,
+	level: 2,
+	weapons:[(FLAMETHROWER,1) , (FLAMETHROWER,2) ],
+	fuel: {diesel: (15, 150), battery: (20,30)},
+	coating: natural,
+	hp: (15, 150),
+}
+
+       [('\n\ttype', 'r'), ('odent,\n\tlevel', '2'), (',\n\tweapons', '['), ('(FLAMETHROWER,1) , (FLAMETHROWER,2) ],\n\tfuel', '{'), ('diesel', '('), ('15, 150), battery', '('), ('20,30)},\n\tcoating', 'n'), ('atural,\n\thp', '(')]
+Novo teste
+       Nerd
+       
+Novo teste
+       (200, 5)
+
+       
+Novo teste
+       Home
+       
