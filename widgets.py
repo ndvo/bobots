@@ -4,6 +4,7 @@ import random
 import settings
 import g
 import dicts
+import utils
 
 class Place():
 	def __init__(self, name):
@@ -246,40 +247,26 @@ class Robot():
 		attributes = ['attack','enter','leave','lose','ouch','stay']
 		dir_actions = os.path.join(g.dir_images,'robots', gender, stage, color)
 		for i in attributes:
-			print i
-			print "  "+self.owner.side
-			if self.owner.side == 'right':
-				self.__dict__[i] = pygame.transform.flip(pygame.image.load(os.path.join(dir_actions, i+'.png')).convert_alpha(), 1,0)
-			else:
-				self.step = 0
-				self.__dict__[i] = pygame.image.load(os.path.join(dir_actions, i+'.png')).convert_alpha()
-		self.animation = self.enter
-		if self.owner.side == 'right':
-			self.step = self.animation.get_width()-self.size[0]
-		else:
-			self.step = 0
+			self.__dict__[i] = utils.Sprite(os.path.join(dir_actions, i+'.png'), (285,350), self.owner.side)
+		self.step = 0
+		self.animation = self.enter.image
+		self.sprite = self.enter
 		self.weapons = ['fire']#TODO: include weapons here
 		self.selected_weapon = 0
 		self.owner.robots.append(self)
 		
 	def on_loop(self):
 		if g.milliseconds == 0:
-			if self.owner.side == 'right':
-				if self.step > 0:
-					self.step -= self.size[0]
-				else:
-					self.step = self.animation.get_width()-self.size[0]
-					self.animation = self.stay
-			else:
-				if self.step < self.animation.get_width()-self.size[0]:
-					self.step += self.size[0]
-				else:
-					self.step = 0
-					self.animation = self.stay
+			done = self.sprite.on_loop()
+			if done:
+				self.sprite = self.stay
+			self.animation = self.sprite.image
+			self.step = self.sprite.step[0]
+
 
 	def action_attack(self):
 		self.step = 0
-		self.animation = self.attack
+		self.sprite = self.attack
 
 	def choose_me(self):
 		self.owner.chosen_bobot = self
