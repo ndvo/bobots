@@ -1,5 +1,6 @@
 
 fps = 40
+talk_time = 2
 
 #### Translation function ####
 import gettext

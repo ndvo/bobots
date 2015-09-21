@@ -13,6 +13,9 @@ def button_street():
 	g.pending_actions.append(interface.transition)
 	g.next_scene = Street()
   
+def take_the_bobot():
+	g.PC.robots.append(widgets.Robot(g.PC, 'rodent', 'one', 'natural'))
+	button_street()
 
 class House(scenes.Scene):
 	place = widgets.Place(os.path.join('squirrelton','house'))
@@ -24,7 +27,7 @@ class House(scenes.Scene):
 	def ready(self):
 		self.dialogs = {
 		 1 : ("Take this bobot, son, and become the greates champion!",(
-				('Take the bobot', "Wow! That's great dad.",0, button_street,'01'),
+				('Take the bobot', "Wow! That's great dad.",0, take_the_bobot,'01'),
 				('Give it up', "I need no bobot!!",1, self.change,'02')
 			)),
 		 2 : ("You could never guess what I have for you today",(
@@ -46,7 +49,7 @@ class House(scenes.Scene):
 			if self.wait and self.wait < 1000:
 				self.wait -= 1
 			if not self.wait:
-				g.board.new_message(self.dialogs[self.dialog_key][0], side = "right")
+				g.foe.talk(self.dialogs[self.dialog_key][0])
 				self.menu = [widgets.Button(i[0],i[1],(5,g.button_slots[i[2]]),i[3],back=i[4]) for i in self.dialogs[self.dialog_key][1]]
 				print self.menu
 				self.wait = 1001
@@ -63,7 +66,6 @@ class House(scenes.Scene):
 
 	def change(self):
 		g.board.new_message("Answer from the player", side="left")
-		g.menu = []
 		self.wait = 40
 		if self.dialog_key == 1:
 			self.dialog_key = 2
@@ -86,7 +88,7 @@ class Street(scenes.Scene):
 
 	def on_center(self):
 		if not self.count:
-			g.board.new_message("So you have a bobot! Let's fight!", side = "right")
+			g.foe.talk("So you have a bobot! Let's fight!")
 			self.menu = [widgets.Button(i[0],i[1],(5,g.button_slots[i[2]]),i[3],back=i[4]) for i in(
 				['Challenge',"You are no match for any prototype I've designed", 0, self.button_challenge, '01'],
 				['Run Away', "So sorry, sir, I didn't mean to disturb", 1, self.button_runaway,'02'],
@@ -97,16 +99,13 @@ class Street(scenes.Scene):
 	
 	def button_challenge(self):
 		self.battle = actions.Battle()
-		g.pending_actions.append(interface.fight)
-		self.battle.choose_your_bobots()
-		g.menu = []
 
 	def button_runaway(self):
 		pass
 
 	def button_park(self):
 		if not self.count:
-			g.board.new_message("I'll go to the park and see some birds.")
+			g.PC.talk("I'll go to the park and see some birds.")
 			g.PC.action = g.PC.go_on
 			g.foe.action =g.foe.go_on
 			g.pending_actions.append(interface.transition)
@@ -129,8 +128,6 @@ class Park(scenes.Scene):
 					['To the street',"I need some fresh air", 260, self.button_street, '03'],
 					['To the school',"Maybe I should try to learn something", 360, self.button_school,'04']
 			)]
-
-	
 		scenes.Scene.__init__(self,)
 
 	def on_center(self):

@@ -50,14 +50,25 @@ class MessageBoard():
 		'right':  pygame.image.load(os.path.join(g.dir_interfaces, 'balloon-right.png')).convert_alpha(), 
 		'none':pygame.image.load(os.path.join(g.dir_interfaces, 'balloon-none.png')).convert_alpha(), 
 		}
+		self.count = 0
 		
 	def new_message(self, text, side='none'):
+		self.count = 0
 		self.side = side
 		self.messages.insert(0, message(self.headlinetext, 500, g.fontmessage))
 		self.headline = message(text, 500, g.fontmessagebold)
 		self.headlinetext = text
 		if len(self.messages) > 5:
 			del self.messages[5]
+	
+	def on_loop(self):
+		if g.milliseconds==0 and self.side!='none' and self.side:
+			self.count +=1
+		if self.count/settings.fps > settings.talk_time:
+			self.side='none'
+			self.count = 0
+
+		
 
 
 def message(text, max_lenght, font):
@@ -93,6 +104,8 @@ def message(text, max_lenght, font):
 
 class Button():
 	backgrounds = [pygame.image.load(os.path.join(g.dir_buttons,i)).convert_alpha() for i in os.listdir(os.path.join(g.dir_buttons)) if i[0:3] == 'btn']
+	slots = [40, 60, 80, 100, 120]
+	now = []
 	def __init__(self, title, text, pos, function,  back='01', arguments = {}):
 		self.title = title
 		self.text = text
@@ -128,6 +141,7 @@ class Button():
 		if g.mouse_button_up == 1:
 			if self.rect.collidepoint(g.mouse_pos):
 				if self.status == 'active':
+					g.scene.menu = []
 					self.execute(**self.arguments)
 					self.status = None
 
@@ -231,6 +245,9 @@ class Char():
 	
 	def update_status(self):
 		return g.font.render("$: %d".ljust(30) % self.money + " Rank: %d" % int(self.rank) ,1, (0,0,0))
+	
+	def talk(self, message):
+		g.board.new_message(message, side=self.side)
 
 
 class Robot():
@@ -248,7 +265,7 @@ class Robot():
 		dir_actions = os.path.join(g.dir_images,'robots', gender, stage, color)
 		for i in attributes:
 			self.__dict__[i] = utils.Sprite(os.path.join(dir_actions, i+'.png'), (285,350), self.owner.side)
-		self.step = 0
+		self.step = 0,0
 		self.animation = self.enter.image
 		self.sprite = self.enter
 		self.weapons = ['fire']#TODO: include weapons here
@@ -258,20 +275,26 @@ class Robot():
 	def on_loop(self):
 		if g.milliseconds == 0:
 			done = self.sprite.on_loop()
-			if done:
+			if done and self.sprite:
 				self.sprite = self.stay
 			self.animation = self.sprite.image
-			self.step = self.sprite.step[0]
-
+			self.step = self.sprite.step
 
 	def action_attack(self):
-		self.step = 0
+		self.attack.reset_step()
 		self.sprite = self.attack
+
+	def action_get_hit(self):
+		self.ouch.reset_step()
+		self.sprite = self.ouch
 
 	def choose_me(self):
 		self.owner.chosen_bobot = self
+		if not g.foe.chosen_bobot:
+			g.foe.chosen_bobot = g.foe.robots[0]
 		
-		
+	def check_integrity(self):
+		assert self.sprite.__class__ == utils.Sprite
 
 class InformationPanel():
 	def __init__(self, panel):
@@ -290,3 +313,7 @@ class InformationPanel():
 					self.step +=1
 			else:	
 				self.count +=1
+
+class Bullets():
+	def __init__(self, name):
+		pass	

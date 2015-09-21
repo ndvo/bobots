@@ -15,11 +15,11 @@ def transition():
 	return False
 
 def fight():
-	if not g.panel:
-		g.panel = widgets.InformationPanel('panel-fight')
-	elif (g.panel.step == len(g.panel.animation)):
-			g.panel = None
-			g.scene.menu = g.scene.next_menu
-			return True
-	else:
-		return False
+	done = False
+	if g.PC.chosen_bobot:
+		if not g.panel:
+			g.panel = widgets.InformationPanel('panel-fight')
+		elif (g.panel.step == len(g.panel.animation)):
+				g.panel = None
+				done= True
+	return done

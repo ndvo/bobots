@@ -58,7 +58,7 @@ def loop():
 	for i in (g.PC, g.foe):
 		if i and i.chosen_bobot:
 			i.chosen_bobot.on_loop()
-			g.main_frame.blit(i.chosen_bobot.animation, i.chosen_bobot.pos,((i.chosen_bobot.step,0), i.chosen_bobot.size))
+			g.main_frame.blit(i.chosen_bobot.animation, i.chosen_bobot.pos,(i.chosen_bobot.step, i.chosen_bobot.size))
 	if g.panel:
 		panel=g.panel
 		panel.on_loop()
@@ -75,6 +75,7 @@ def loop():
 		elif g.PC.pos[0] < 180 and g.PC.animation == g.PC.walk:
 			g.scene.on_start_leave()
 
+	g.board.on_loop()
 	for (p,i) in zip(g.slots, [i for sub in g.board.messages for i in sub] ):
 		g.text_frame.blit(i,(35,p))
 	
