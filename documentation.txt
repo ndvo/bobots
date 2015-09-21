@@ -1,0 +1,1 @@
+The blitting function will blit the "animation" property of the object on the position "pos" using the properties "step" and "size" to find the apropriate image on the sprite sheet.

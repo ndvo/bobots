@@ -1,0 +1,17 @@
+como criar uma tela
+	como criar o loop principal
+	(A tela surge e some)
+	(O loop torna permanente: cancelar)
+como mostrar uma imagem
+	como blitar
+	(Analogia com animação com papel)
+como fazer a imagem se mexer
+	como mover
+	como flipar
+	como preencher
+como fazer a imagem se animar
+	usar lista de imagens
+	usar tira de imagens
+como fazer a imagem se rotacionar
+	como usar o transform
+	como ajustar a posição da imagem
